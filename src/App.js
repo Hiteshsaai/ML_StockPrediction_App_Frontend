@@ -1,54 +1,43 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import './App.css';
-import {FormControl , FormGroup, FormLabel, Container, Row, Col} from 'react-bootstrap';
+import {FormControl , FormGroup, Container, Row, Col, Button} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import fetchData from './api/fetchData';
+import { render } from '@testing-library/react';
+import axios from 'axios';
+// import fetchData from './api/fetchData';
 
-class App extends Component {
+const App = () =>  {
 
-    state = {
-      data: {},
-      date: [],
-      stock_values: [],
-      predict_values: [],
-      given_name: '',
-      duration: ''
-    }  
-    
+    // state = {
+    //   data: {},
+    //   input: "",
+    //   date: [],
+    //   stock_values: [],
+    //   predict_values: [],
+    // }  
 
-  async componentDidMount(){
-    const data = await fetchData();
+    const [value, setValue] = useState('');
+    const [date, setDate] = useState([]);
+    const [ticker, setTicker] = useState('');
+    const [stockvalue, setStockvalue] = useState([]);
+    const [predstock, setPredstock] = useState([]);
 
-    this.setState({data: data})
-    console.log(this.state);
-  }
-
-  onChangeCompanyName(e){
-    this.setState(
-      {given_name : e.target.value}
-      );
-  }
-
-  onChangePredictDuration(e){
-    this.setState(
-      {duration: e.target.value}
-    )
-  }
+    const fetchData = async(e) => {
+        const result = value.split(',');
+        console.log(result);
+        const ticker = result[0];
+        const duration = Number(result[1]);
+        e.preventDefault();
+        const {data} = await axios.get(`https://stockprediction-hitesh-ml.herokuapp.com/${ticker}/${duration}`);
+        // const {Company_Ticker, date, stock_pred_values, stock_values} = await axios.get(`https://stockprediction-hitesh-ml.herokuapp.com/${ticker}/${duration}`);
+        setDate(data.date);
+        setTicker(data.Company_Ticker);
+        setStockvalue(data.stock_values);
+        setPredstock(data.stock_pred_values);
+        setValue('');
+    };
+    console.log(stockvalue);
   
-  // handleCountryChange = async () => {
-  //   const data = await fetchData(country);
-
-  //   this.setState({ data, country: country });
-
-  // handleCountryChange = async (compName) => {
-  //   const data = await fetchData(compName);
-
-  //   this.setState({ data, country: country });
-  // }
-
-
-
-  render(){
 
     return(
       <div>
@@ -62,17 +51,23 @@ class App extends Component {
         <FormGroup>
           <Container>
             <Row>
-              <Col> <FormControl size="lg" type="text"  placeholder="Company Name" onChange = {this.onChangeCompanyName}/> </Col>
-              <Col xs = {5}> <FormControl type="text"  placeholder="Prediction days (Should be Integer)" onKeyPress = {this.onChangePredictDuration}/></Col>
+              <Col> <FormControl value = {value} size="lg" type="text"  placeholder="Company Name, Prediction days(Give Integer)" onChange = {e => setValue(e.target.value)}/> </Col>
+              {/* <Col xs = {5}> <FormControl type="text"  placeholder="Prediction days (Should be Integer)" onKeyPress = {this.onChangePredictDuration}/></Col> */}
           </Row>
+          <div className="mb-2 button">
+            <Button variant="primary" size="lg" onClick = {fetchData}>
+                Predict
+            </Button>
+          </div>
           </Container>
         </FormGroup>
         </div>
+
       </div> 
-    )
-  }
+    );
 
 }
+
 
 
 export default App;

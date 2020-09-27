@@ -22,6 +22,9 @@
 .container {
   text-align: center;
 }
+.button{
+  margin-top :5%;
+}
 
 .heading {
   font-family: 'Noto Sans JP', sans-serif;
