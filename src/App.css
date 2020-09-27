@@ -16,7 +16,9 @@
 
 }
 
-
+.form{
+  margin-top: 5%;
+}
 .container {
   text-align: center;
 }
@@ -26,7 +28,7 @@
   position: absolute;
   top: 40%;
   left: 50%;
-  font-size: 25px;;
+  font-size: 50px;;
   color: black;
   opacity: 0.8;
   transform: translate(-50%, -50%);
