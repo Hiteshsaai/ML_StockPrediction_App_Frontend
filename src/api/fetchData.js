@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-url = 'https://stockprediction-ml.herokuapp.com/';
+const url = 'https://stockprediction-hitesh-ml.herokuapp.com/';
 
-const fetchData = (compName, duration) => {
+const fetchData = async(compName, duration) => {
     let changeableUrl = url;
 
     if (compName && duration){
-        changeableUrl = `${url}/${compNmae}/${duration}`;
+        changeableUrl = `${url}/${compName}/${duration}`;
     }
 
     try{
@@ -18,3 +18,6 @@ const fetchData = (compName, duration) => {
         }
     };
     
+    
+
+export default fetchData;
