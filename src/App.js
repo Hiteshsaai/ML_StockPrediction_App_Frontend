@@ -2,7 +2,9 @@ import React, {useState} from 'react';
 import './App.css';
 import {FormControl , FormGroup, Container, Row, Col, Button} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { render } from '@testing-library/react';
+// import { Charts, ChartContainer, ChartRow, YAxis, LineChart } from "react-timeseries-charts";
+import {XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries, VerticalGridLines, LineMarkSeries} from 'react-vis';
+import { TimeSeries } from "pondjs";
 import axios from 'axios';
 // import fetchData from './api/fetchData';
 
@@ -19,8 +21,27 @@ const App = () =>  {
     const [value, setValue] = useState('');
     const [date, setDate] = useState([]);
     const [ticker, setTicker] = useState('');
-    const [stockvalue, setStockvalue] = useState([]);
-    const [predstock, setPredstock] = useState([]);
+    // const [stockvalue, setStockvalue] = useState([]);
+    // const [predstock, setPredstock] = useState([]);
+    const[allstockvalue, setAllstockvalue] = useState([]);
+
+    // const num1 = ["2018-01-02",
+    // "2018-01-03",
+    // "2018-01-04",
+    // "2018-01-05",
+    // "2018-01-08",
+    // "2018-01-09",
+    // "2018-01-10",
+    // "2018-01-11",];
+    // const num2 = [3,4,5,6,7,8,9,10];
+
+    // const data = [];
+    // num1.forEach((date, index) => {
+    //   const value = num2[index];
+    //   data.push({x: new Date(date), y: value})
+    // });
+
+    // console.log(data);
 
     const fetchData = async(e) => {
         const result = value.split(',');
@@ -29,15 +50,24 @@ const App = () =>  {
         const duration = Number(result[1]);
         e.preventDefault();
         const {data} = await axios.get(`https://stockprediction-hitesh-ml.herokuapp.com/${ticker}/${duration}`);
-        // const {Company_Ticker, date, stock_pred_values, stock_values} = await axios.get(`https://stockprediction-hitesh-ml.herokuapp.com/${ticker}/${duration}`);
         setDate(data.date);
+        const all_value = data.stock_values.concat(data.stock_pred_values); 
+        setAllstockvalue(all_value);
         setTicker(data.Company_Ticker);
-        setStockvalue(data.stock_values);
-        setPredstock(data.stock_pred_values);
         setValue('');
     };
-    console.log(stockvalue);
-  
+    
+
+    const result = [];
+    date.forEach((currDate, index) => {
+      const value = allstockvalue[index];
+      console.log(value);
+      result.push({x: new Date(currDate), y: value})
+    });
+
+    console.log(result);
+
+
 
     return(
       <div>
@@ -62,7 +92,17 @@ const App = () =>  {
           </Container>
         </FormGroup>
         </div>
-
+        {result && (<div>
+          <XYPlot xType="time" width={1000} height={300}>
+          <HorizontalGridLines />
+          <VerticalGridLines />
+          <XAxis title="X Axis" />
+          <YAxis title="Y Axis" />
+          <LineMarkSeries data={result}/>
+          </XYPlot>  
+        </div>
+)}
+      
       </div> 
     );
 

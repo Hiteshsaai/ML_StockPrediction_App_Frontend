@@ -10,7 +10,7 @@ const fetchData = async(compName, duration) => {
     }
 
     try{
-        const {data: Company_Ticker, date, stock_pred_values, stock_values} = await axios.get(changeableUrl);
+        const {data : Company_Ticker, date, stock_pred_values, stock_values} = await axios.get(changeableUrl);
         
         return {Company_Ticker, date, stock_pred_values, stock_values};
         } catch(error){
